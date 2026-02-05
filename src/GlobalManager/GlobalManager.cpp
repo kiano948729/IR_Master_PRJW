@@ -1,11 +1,12 @@
-#include "Arduino.h"
+#include <Arduino.h>
 #include "GlobalManager.h"
-#include "SensorManager/SensorManager.h"
-#include "SequenceManager/SequenceManager.h"
+#include "../SensorManager/SensorManager.h"
+#include "../SequenceManager/SequenceManager.h"
+#include "../SlaveManager/SlaveManager.h"
 
-void GlobalManager_init()
-{
+void GlobalManager_init() {
     SensorManager_init();
+    SlaveManager_init();
 
     SensorManager_registerSensor(2); // pin connectie naar slave
     SensorManager_registerSensor(3); // pin connectie naar slave
@@ -13,7 +14,13 @@ void GlobalManager_init()
     SensorManager_registerSensor(5); // pin connectie naar slave
 }
 
-void GlobalManager_update()
-{
+void GlobalManager_update() {
     SensorManager_update();
+    SlaveManager_update();
+
+    // Voorbeeld: als laatste sensor geactiveerd is, stuur slave
+    uint8_t lastSensor = SensorManager_getLastActivatedSensor();
+    if (lastSensor != 255 && !SlaveManager_pingReceived(lastSensor)) {
+        SlaveManager_sendCommand(lastSensor);
+    }
 }
