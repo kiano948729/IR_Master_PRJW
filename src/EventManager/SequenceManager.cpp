@@ -1,3 +1,4 @@
+#include <Arduino.h>
 const int irPin = 7;      
 const int buzzerPin = 8;  
 
