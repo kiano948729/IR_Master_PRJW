@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "GlobalManager.h"
-#include "SensorManager.h"
-#include "SequenceManager.h"
+#include "SensorManager/SensorManager.h"
+#include "SequenceManager/SequenceManager.h"
 
 void GlobalManager_init()
 {

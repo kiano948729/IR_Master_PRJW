@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "SensorManager.h"
-#include "SequenceManager.h"
+#include "SequenceManager/SequenceManager.h"
 
 struct Sensor {
     uint8_t pin;
