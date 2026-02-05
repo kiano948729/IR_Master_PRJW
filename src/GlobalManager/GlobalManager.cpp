@@ -18,9 +18,15 @@ void GlobalManager_update() {
     SensorManager_update();
     SlaveManager_update();
 
-    // Voorbeeld: als laatste sensor geactiveerd is, stuur slave
     uint8_t lastSensor = SensorManager_getLastActivatedSensor();
     if (lastSensor != 255 && !SlaveManager_pingReceived(lastSensor)) {
-        SlaveManager_sendCommand(lastSensor);
+        SlaveManager_sendCommand(lastSensor, 1);
+    }
+
+    if (SequenceManager_isComplete()) {
+        SequenceManager_resetSequence();
+        for (uint8_t i = 0; i < SensorManager_getSensorCount(); i++) {
+            SlaveManager_resetPing(i);
+        }
     }
 }

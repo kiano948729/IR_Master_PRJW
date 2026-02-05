@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "GlobalManager/GlobalManager.h"
 
 void setup()

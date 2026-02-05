@@ -1,23 +1,23 @@
-#include <Arduino.h>
-const int irPin = 7;      
-const int buzzerPin = 8;  
+// #include <Arduino.h>
+// const int irPin = 7;      
+// const int buzzerPin = 8;  
 
-int lastState = HIGH;
+// int lastState = HIGH;
 
-void setup() {
-  pinMode(irPin, INPUT);
-  pinMode(buzzerPin, OUTPUT);
-}
+// void setup() {
+//   pinMode(irPin, INPUT);
+//   pinMode(buzzerPin, OUTPUT);
+// }
 
-void loop() {
-  int currentState = digitalRead(irPin);
+// void loop() {
+//   int currentState = digitalRead(irPin);
 
-  // Zodra ontvanger data detecteert
-  if (lastState == HIGH && currentState == LOW) {
-    tone(buzzerPin, 2000); // HOOG geluid
-    delay(200);            // korte piep
-    noTone(buzzerPin);
-  }
+//   // Zodra ontvanger data detecteert
+//   if (lastState == HIGH && currentState == LOW) {
+//     tone(buzzerPin, 2000); // HOOG geluid
+//     delay(200);            // korte piep
+//     noTone(buzzerPin);
+//   }
 
-  lastState = currentState;
-}
+//   lastState = currentState;
+// }
