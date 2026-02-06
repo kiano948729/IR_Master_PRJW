@@ -5,6 +5,7 @@
 
 #define MAX_SEQUENCE 32
 
+void SequenceManager_init(uint8_t expectedLength);
 void SequenceManager_recordActivation(uint8_t sensorIndex);
 void SequenceManager_resetSequence();
 

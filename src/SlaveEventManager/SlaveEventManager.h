@@ -3,8 +3,7 @@
 
 #include <Arduino.h>
 
-void SlaveEventManager_init();
+void SlaveEventManager_init(uint8_t address);
 void SlaveEventManager_update();
-void SlaveEventManager_sendData();
 
 #endif

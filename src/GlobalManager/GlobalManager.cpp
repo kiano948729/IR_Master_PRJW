@@ -4,29 +4,47 @@
 #include "../SequenceManager/SequenceManager.h"
 #include "../SlaveManager/SlaveManager.h"
 
-void GlobalManager_init() {
-    SensorManager_init();
-    SlaveManager_init();
+#define SLAVE_COUNT 4
 
-    SensorManager_registerSensor(2); // pin connectie naar slave
-    SensorManager_registerSensor(3); // pin connectie naar slave
-    SensorManager_registerSensor(4); // pin connectie naar slave
-    SensorManager_registerSensor(5); // pin connectie naar slave
+void GlobalManager_init()
+{
+    Serial.begin(115200);
+    Serial.println("Master gestart");
+SensorManager_init();
+SequenceManager_init(SLAVE_COUNT);
+SlaveManager_init(SLAVE_COUNT);
+
+SensorManager_registerSensor(2);
+SensorManager_registerSensor(3);
+SensorManager_registerSensor(4);
+SensorManager_registerSensor(5);
+
 }
 
-void GlobalManager_update() {
+void GlobalManager_update()
+{
     SensorManager_update();
     SlaveManager_update();
 
     uint8_t lastSensor = SensorManager_getLastActivatedSensor();
-    if (lastSensor != 255 && !SlaveManager_pingReceived(lastSensor)) {
-        SlaveManager_sendCommand(lastSensor, 1);
+
+    if (lastSensor != 255)
+    {
+        Serial.print("Sensor geactiveerd: ");
+        Serial.println(lastSensor);
+
+        if (!SlaveManager_pingReceived(lastSensor))
+        {
+            Serial.print("Command gestuurd naar slave ");
+            Serial.println(lastSensor);
+            SlaveManager_sendCommand(lastSensor, 1);
+        }
     }
 
-    if (SequenceManager_isComplete()) {
+    if (SequenceManager_isComplete())
+    {
+        Serial.println("Sequence compleet → reset");
         SequenceManager_resetSequence();
-        for (uint8_t i = 0; i < SensorManager_getSensorCount(); i++) {
-            SlaveManager_resetPing(i);
-        }
+        SlaveManager_resetAllPings();
     }
 }
