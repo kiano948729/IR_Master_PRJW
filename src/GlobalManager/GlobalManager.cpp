@@ -10,15 +10,14 @@ void GlobalManager_init()
 {
     Serial.begin(115200);
     Serial.println("Master gestart");
-SensorManager_init();
-SequenceManager_init(SLAVE_COUNT);
-SlaveManager_init(SLAVE_COUNT);
+    SensorManager_init();
+    SequenceManager_init(SLAVE_COUNT);
+    SlaveManager_init(SLAVE_COUNT);
 
-SensorManager_registerSensor(2);
-SensorManager_registerSensor(3);
-SensorManager_registerSensor(4);
-SensorManager_registerSensor(5);
-
+    SensorManager_registerSensor(2);
+    SensorManager_registerSensor(3);
+    SensorManager_registerSensor(4);
+    SensorManager_registerSensor(5);
 }
 
 void GlobalManager_update()

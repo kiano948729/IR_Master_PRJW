@@ -14,15 +14,15 @@ static unsigned long lastBeep = 0;
 
 void receiveEvent(int bytes)
 {
-if (Wire.available())
-{
-command = Wire.read();
-}
+    if (Wire.available())
+    {
+        command = Wire.read();
+    }
 }
 
 void requestEvent()
 {
-Wire.write(status);
+    Wire.write(status);
 }
 
 void SlaveEventManager_init(uint8_t address)
