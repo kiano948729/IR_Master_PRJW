@@ -9,6 +9,7 @@
 void GlobalManager_init()
 {
     Serial.begin(115200);
+    delay(500);
     Serial.println("Master gestart");
     SensorManager_init();
     SequenceManager_init(SLAVE_COUNT);
@@ -42,7 +43,7 @@ void GlobalManager_update()
 
     if (SequenceManager_isComplete())
     {
-        Serial.println("Sequence compleet → reset");
+        Serial.println("Sequence compleet -> reset");
         SequenceManager_resetSequence();
         SlaveManager_resetAllPings();
     }

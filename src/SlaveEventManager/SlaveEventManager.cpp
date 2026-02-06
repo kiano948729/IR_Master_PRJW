@@ -28,6 +28,7 @@ void requestEvent()
 void SlaveEventManager_init(uint8_t address)
 {
     Serial.begin(115200);
+    delay(500);
     Serial.print("Slave gestart op adres ");
     Serial.println(address);
 
