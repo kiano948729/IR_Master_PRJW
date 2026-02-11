@@ -3,19 +3,28 @@
 #include "../SensorManager/SensorManager.h"
 #include "../SlaveManager/SlaveManager.h"
 #include "../SequenceManager/SequenceManager.h"
+#include <Wire.h>
 
 const uint8_t slaveAddresses[] = {1, 2};
 #define SLAVE_COUNT (sizeof(slaveAddresses) / sizeof(slaveAddresses[0]))
-const uint8_t correctSequence[] = {1, 2, 1, 1};
+const uint8_t correctSequence[] = {1, 2, 2, 1};
 #define SEQUENCE_LENGTH (sizeof(correctSequence) / sizeof(correctSequence[0]))
 const uint8_t sensorToSlaveAddress[] = {1, 2};
 
 static bool puzzleSolved = false;
+#define LCD_SLAVE_ADDR 0x10
+
+void sendCodeToLCD(const char* code) {
+    Wire.beginTransmission(LCD_SLAVE_ADDR);
+    Wire.write(code);
+    Wire.endTransmission();
+}
 
 void GlobalManager_init()
 {
     Serial.begin(115200);
     delay(500);
+    Wire.begin();
     Serial.println("Master gestart");
     SensorManager_init();
     SlaveManager_init(slaveAddresses, SLAVE_COUNT);
@@ -44,6 +53,7 @@ void GlobalManager_update()
             {
                 Serial.println("PUZZEL OPGELOST!");
                 puzzleSolved = true;
+                sendCodeToLCD("1234");
                 for (uint8_t j = 0; j < SLAVE_COUNT; j++)
                     SlaveManager_sendCommand(j, 1);
             }
