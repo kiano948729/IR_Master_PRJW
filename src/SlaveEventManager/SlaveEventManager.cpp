@@ -7,6 +7,8 @@ static const int outPin = 7;
 static volatile uint8_t command = 0;
 static volatile uint8_t status = 0;
 
+static uint8_t slaveAddress = 0;
+
 static int baseline = 0;
 static bool calibrated = false;
 
@@ -22,13 +24,16 @@ void receiveEvent(int bytes)
 
 void requestEvent()
 {
-    Wire.write(status);
+    Wire.write(slaveAddress);
 }
 
 void SlaveEventManager_init(uint8_t address)
 {
+    slaveAddress = address;
+
     Serial.begin(115200);
     delay(500);
+
     Serial.print("Slave gestart op adres ");
     Serial.println(address);
 
@@ -48,21 +53,12 @@ void SlaveEventManager_update()
     {
         baseline = value + 50;
         calibrated = true;
-
-        Serial.print("Baseline ingesteld op ");
-        Serial.println(baseline);
     }
 
     if (command == 1)
     {
         if (value > baseline)
         {
-            if (status == 0)
-            {
-                Serial.print("Beep! Sensorwaarde: ");
-                Serial.println(value);
-            }
-
             status = 1;
 
             if (millis() - lastBeep > 200)
