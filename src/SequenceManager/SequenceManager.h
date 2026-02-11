@@ -3,15 +3,10 @@
 
 #include <stdint.h>
 
-#define MAX_SEQUENCE 32
-
-void SequenceManager_init(uint8_t expectedLength);
-void SequenceManager_recordActivation(uint8_t sensorIndex);
-void SequenceManager_resetSequence();
-
-uint8_t SequenceManager_getLength();
-uint8_t SequenceManager_getStep(uint8_t index);
-
+void SequenceManager_init(const uint8_t* sequence, uint8_t length);
+void SequenceManager_recordActivation(uint8_t address);
 bool SequenceManager_isComplete();
+void SequenceManager_reset();
+uint8_t SequenceManager_getCurrentStep();
 
 #endif

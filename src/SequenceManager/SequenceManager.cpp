@@ -1,53 +1,48 @@
 #include "SequenceManager.h"
 
-static uint8_t activationSequence[MAX_SEQUENCE];
-static uint8_t sequenceLength = 0;
-static uint8_t expectedSequenceLength = 0;
-static bool sequenceComplete = false;
+static const uint8_t* correctSequence;
+static uint8_t sequenceLength;
+static uint8_t currentStep = 0;
+static bool complete = false;
 
-void SequenceManager_init(uint8_t expectedLength)
+void SequenceManager_init(const uint8_t* sequence, uint8_t length)
 {
-    expectedSequenceLength = expectedLength;
-    sequenceLength = 0;
-    sequenceComplete = false;
+    correctSequence = sequence;
+    sequenceLength = length;
+    currentStep = 0;
+    complete = false;
 }
 
-void SequenceManager_recordActivation(uint8_t sensorIndex)
+bool SequenceManager_isCorrectStep(uint8_t address)
 {
-    if (sequenceComplete)
-        return;
-
-    if (sequenceLength < MAX_SEQUENCE)
+    if (complete) return false;
+    if (address == correctSequence[currentStep])
     {
-        activationSequence[sequenceLength] = sensorIndex;
-        sequenceLength++;
-
-        if (sequenceLength >= expectedSequenceLength)
-        {
-            sequenceComplete = true;
-        }
+        currentStep++;
+        if (currentStep >= sequenceLength) complete = true;
+        return true;
     }
+    currentStep = 0;
+    return false;
 }
 
-void SequenceManager_resetSequence()
+void SequenceManager_recordActivation(uint8_t address)
 {
-    sequenceLength = 0;
-    sequenceComplete = false;
-}
-
-uint8_t SequenceManager_getLength()
-{
-    return sequenceLength;
-}
-
-uint8_t SequenceManager_getStep(uint8_t index)
-{
-    if (index >= sequenceLength)
-        return 255;
-    return activationSequence[index];
+    SequenceManager_isCorrectStep(address);
 }
 
 bool SequenceManager_isComplete()
 {
-    return sequenceComplete;
+    return complete;
+}
+
+void SequenceManager_reset()
+{
+    currentStep = 0;
+    complete = false;
+}
+
+uint8_t SequenceManager_getCurrentStep()
+{
+    return currentStep;
 }
