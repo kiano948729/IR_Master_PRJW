@@ -7,7 +7,7 @@
 
 const uint8_t slaveAddresses[] = {1, 2};
 #define SLAVE_COUNT (sizeof(slaveAddresses) / sizeof(slaveAddresses[0]))
-const uint8_t correctSequence[] = {1, 2, 2, 1};
+const uint8_t correctSequence[] = {1, 2, 1, 1};
 #define SEQUENCE_LENGTH (sizeof(correctSequence) / sizeof(correctSequence[0]))
 const uint8_t sensorToSlaveAddress[] = {1, 2};
 
