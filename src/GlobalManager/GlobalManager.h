@@ -6,4 +6,6 @@
 void GlobalManager_init();
 void GlobalManager_update();
 
+uint8_t SequenceManager_getCurrentLength();
+const uint8_t* SequenceManager_getCurrentSequence();
 #endif
