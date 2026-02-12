@@ -8,12 +8,10 @@
 const uint8_t slaveAddresses[] = {1, 2};
 #define SLAVE_COUNT (sizeof(slaveAddresses) / sizeof(slaveAddresses[0]))
 
-const uint8_t correctSequence[] = {1, 2, 1, 1};
+const uint8_t correctSequence[] = {1, 2, 1};
 #define SEQUENCE_LENGTH (sizeof(correctSequence) / sizeof(correctSequence[0]))
 
 const uint8_t sensorToSlaveAddress[] = {1, 2};
-
-static bool puzzleSolved = false;
 
 #define LCD_SLAVE_ADDR 0x10
 
@@ -65,6 +63,25 @@ void sendCodeToLCD(const char *code)
     Serial.println(buffer);
 }
 
+static bool puzzleSolved = false;
+static unsigned long puzzleStartTime = 0;
+static const unsigned long PUZZLE_TIMEOUT = 60000; // 60 seconden
+
+void startPuzzleTimer()
+{
+    puzzleStartTime = millis();
+}
+
+void resetPuzzle()
+{
+    puzzleSolved = false;
+    SequenceManager_reset();
+    SlaveManager_resetAllPings();
+    startPuzzleTimer();
+    sendSequenceToLCD();
+    Serial.println("Puzzel is gereset!");
+}
+
 void GlobalManager_init()
 {
     Serial.begin(115200);
@@ -75,7 +92,6 @@ void GlobalManager_init()
     Serial.println("Master gestart");
 
     SensorManager_init();
-
     SlaveManager_init(slaveAddresses, SLAVE_COUNT);
 
     SensorManager_registerSensor(2);
@@ -84,15 +100,25 @@ void GlobalManager_init()
     SequenceManager_init(correctSequence, SEQUENCE_LENGTH);
 
     Serial.println("Puzzel klaar");
+
+    startPuzzleTimer(); // start timer bij begin
 }
 
 void GlobalManager_update()
 {
-    if (puzzleSolved)
-        return;
-
     SensorManager_update();
     SlaveManager_update();
+
+    unsigned long now = millis();
+
+    if (now - puzzleStartTime > PUZZLE_TIMEOUT)
+    {
+        resetPuzzle();
+        return;
+    }
+
+    if (puzzleSolved)
+        return;
 
     for (uint8_t i = 0; i < SLAVE_COUNT; i++)
     {
@@ -104,25 +130,23 @@ void GlobalManager_update()
             Serial.println(address);
 
             SequenceManager_recordActivation(address);
-
             sendSequenceToLCD();
-
             SlaveManager_resetPing(i);
-
             SlaveManager_sendCommand(i, 1);
 
             if (SequenceManager_isComplete())
             {
                 Serial.println("PUZZEL OPGELOST!");
-
                 puzzleSolved = true;
 
-                sendCodeToLCD("1234");
+                sendCodeToLCD("428");
 
                 for (uint8_t j = 0; j < SLAVE_COUNT; j++)
                 {
                     SlaveManager_sendCommand(j, 1);
                 }
+
+                startPuzzleTimer(); // start 60 seconden timer na oplossen
             }
         }
     }
